@@ -4,8 +4,10 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.HttpRequestUtils;
 
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -28,32 +30,42 @@ public class RequestHandler extends Thread {
             2. 요청된 url을 추출한다.
             3. 해당 url에 맞는 파일을 webapp 디렉토리에서 읽어서 전달한다.
              */
+            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
-            String line;
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+            // 첫 줄 읽기
+            String line = br.readLine();
+            log.debug("request line : {}", line);
 
-            String requestedUrl = null;
-            int i = 0;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (!"".equals(line)) {
-                    if (i == 0) {
-                        String[] tokens = line.split(" ");
-                        requestedUrl = tokens[1];
-                    }
-                } else {
-                    break;
-                }
-                i++;
+            if (line == null) {
+                return;
             }
-            byte[] body;
-            if (requestedUrl.equals("/")) {
-                body = "Hello World".getBytes();
+
+            String[] tokens = line.split(" ");
+
+            while (!line.equals("")) {
+                line = br.readLine();
+                log.debug("header : {}", line);
+            }
+            String requestedUrl = tokens[1];
+
+            if (requestedUrl.startsWith("/user/create")) {
+                int index = requestedUrl.indexOf("?");
+                String requestPath = requestedUrl.substring(0, index);
+                String params = requestedUrl.substring(index+1);
+                User user = new User(
+                        HttpRequestUtils.parseQueryString(params).get("userId"),
+                        HttpRequestUtils.parseQueryString(params).get("password"),
+                        HttpRequestUtils.parseQueryString(params).get("name"),
+                        HttpRequestUtils.parseQueryString(params).get("email")
+                );
+                log.debug("User : {}", user);
+
             } else {
-                body = Files.readAllBytes(new File("./webapp" + requestedUrl).toPath());
+                byte[] body = body = Files.readAllBytes(new File("./webapp" + requestedUrl).toPath());
+                DataOutputStream dos = new DataOutputStream(out);
+                response200Header(dos, body.length);
+                responseBody(dos, body);
             }
-            DataOutputStream dos = new DataOutputStream(out);
-            response200Header(dos, body.length);
-            responseBody(dos, body);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
