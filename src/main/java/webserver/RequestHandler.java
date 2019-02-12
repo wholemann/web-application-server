@@ -60,9 +60,6 @@ public class RequestHandler extends Thread {
             String requestedUrl = tokens[1];
 
             if (requestedUrl.equals("/user/create")) {
-//                int index = requestedUrl.indexOf("?");
-//                String requestPath = requestedUrl.substring(0, index);
-//                String params = requestedUrl.substring(index+1);
                 String requestBody = IOUtils.readData(br, contentLength);
                 Map<String, String> params = HttpRequestUtils.parseQueryString(requestBody);
 
