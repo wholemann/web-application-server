@@ -28,7 +28,7 @@
 * 반드시 "Location : /" 으로 리다이렉션 URL을 보내줘야 한다. 
 
 ### 요구사항 5 - cookie
-####3xx Redirection
+#### 3xx Redirection
 * HTTP 리다이렉트는 3xx 상태 코드를 지닌 응답
 * 리다이렉트 응답을 수신한 브라우저는, 제공된 새로운 URL을 다시 GET으로 요청 
 
