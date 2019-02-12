@@ -24,7 +24,8 @@
 * 
 
 ### 요구사항 4 - redirect 방식으로 이동
-* 
+* 302는 리다이렉션 시 보내주는 response code.
+* 반드시 "Location : /" 으로 리다이렉션 URL을 보내줘야 한다. 
 
 ### 요구사항 5 - cookie
 * 

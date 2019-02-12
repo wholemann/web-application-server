@@ -72,8 +72,13 @@ public class RequestHandler extends Thread {
                         params.get("email")
                 );
                 log.debug("User : {}", user);
+                byte[] body = Files.readAllBytes(new File("./webapp" + "/index.html").toPath());
+                DataOutputStream dos = new DataOutputStream(out);
+                response302Header(dos, body.length);
+                responseBody(dos, body);
+
             } else {
-                byte[] body = body = Files.readAllBytes(new File("./webapp" + requestedUrl).toPath());
+                byte[] body = Files.readAllBytes(new File("./webapp" + requestedUrl).toPath());
                 DataOutputStream dos = new DataOutputStream(out);
                 response200Header(dos, body.length);
                 responseBody(dos, body);
@@ -91,6 +96,18 @@ public class RequestHandler extends Thread {
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
+            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private void response302Header(DataOutputStream dos, int lengthOfBodyContent) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 FOUND \r\n");
+            dos.writeBytes("Location : /index.html \r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
