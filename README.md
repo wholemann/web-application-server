@@ -33,7 +33,9 @@
 * 리다이렉트 응답을 수신한 브라우저는, 제공된 새로운 URL을 다시 GET으로 요청 
 
 ### 요구사항 6 - stylesheet 적용
-* 
+*
+
+### 요구사항 모두 완료 후 was-step1-bad-version 브랜치로 checkout
 
 ### heroku 서버에 배포 후
 * 
